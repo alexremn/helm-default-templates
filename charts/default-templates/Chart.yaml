@@ -1,9 +1,8 @@
 apiVersion: v2
-appVersion: '1.0.1'
-version: '1.0.1'
+appVersion: '1.0.2'
+version: '1.0.2'
 name: default-templates
 description: Default templates chart
-home: https://harbor.int.imlab.by/harbor/projects/9/helm-charts
 icon: https://hub.docker.com/public/images/logos/mini-logo.svg
 sources:
 - https://gitlab.imlab.by/infrastructure/helm
