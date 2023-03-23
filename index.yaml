@@ -1,0 +1,23 @@
+apiVersion: v1
+entries:
+  default-templates:
+  - apiVersion: v2
+    appVersion: 1.0.1
+    created: "2023-03-23T09:36:06.860710772Z"
+    description: Default templates chart
+    digest: e4b148bbb86bf7df3aa9063ad75ca2b5715e32a348f1f675a379b3de5df4c082
+    home: https://harbor.int.imlab.by/harbor/projects/9/helm-charts
+    icon: https://hub.docker.com/public/images/logos/mini-logo.svg
+    keywords:
+    - default
+    - templates
+    maintainers:
+    - email: alex@doneright.dev
+      name: Alexander Remniov
+    name: default-templates
+    sources:
+    - https://gitlab.imlab.by/infrastructure/helm
+    urls:
+    - https://github.com/alexremn/helm-default-templates/releases/download/default-templates-1.0.1/default-templates-1.0.1.tgz
+    version: 1.0.1
+generated: "2023-03-23T09:36:06.860717772Z"
