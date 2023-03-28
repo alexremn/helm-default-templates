@@ -41,7 +41,7 @@ spec:
               {{- if .portName }}
                 name: {{ .portName }}
               {{- else }}
-                number: {{ .port | default ((index $.Values.service.ports 0).port)}}
+                number: {{ if $.Values.service -}} {{ .port | default ((index $.Values.service.ports 0).port)}} {{- else -}} {{ .port }} {{- end }}
               {{- end }}
         {{- end }}
         {{- else }}
