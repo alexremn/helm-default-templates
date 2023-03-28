@@ -20,7 +20,7 @@ spec:
       targetPort: {{ $port.targetPort | default $port.port }}
       protocol: {{ $port.protocol | default "TCP" }}
       name: {{ $port.name }}
-      {{ if $port.nodePort }}
+      {{ if and (eq .Values.service.type "NodePort") $port.nodePort }}
       nodePort: {{ $port.nodePort }}
       {{ end }}
 {{- end }}

@@ -1,6 +1,6 @@
 apiVersion: v2
-appVersion: '1.0.3'
-version: '1.0.3'
+appVersion: '1.0.4'
+version: '1.0.4'
 name: default-templates
 description: Default templates chart
 icon: https://hub.docker.com/public/images/logos/mini-logo.svg
