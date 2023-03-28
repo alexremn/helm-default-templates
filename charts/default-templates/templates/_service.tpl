@@ -20,9 +20,6 @@ spec:
       targetPort: {{ $port.targetPort | default $port.port }}
       protocol: {{ $port.protocol | default "TCP" }}
       name: {{ $port.name }}
-#      {{ if and (eq "NodePort" ( .Values.service.type | default "ClusterIP" ) ) $port.nodePort }}
-#      nodePort: {{ $port.nodePort }}
-#      {{ end }}
 {{- end }}
   selector:
     app: {{ template "chart.name" . }}
