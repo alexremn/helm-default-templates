@@ -39,12 +39,14 @@ spec:
       labels:
         app: {{ template "chart.name" . }}
         release: {{ .Release.Name | quote }}
+{{- if .Values.pod }}
 {{- if .Values.pod.labels }}
 {{- toYaml .Values.pod.labels | nindent 8 }}
 {{- end }}
 {{- if .Values.pod.annotations }}
       annotations:
 {{ toYaml .Values.pod.annotations | nindent 8 }}
+{{- end }}
 {{- end }}
     spec:
 {{- if .Values.global.imagePullSecret }}
@@ -60,8 +62,10 @@ spec:
 {{- tpl . $ | nindent 8 }}
 {{- end }}
 {{- end }}
+{{- if .Values.pod }}
 {{- if .Values.pod.serviceAccount }}
       serviceAccountName: {{ .Values.pod.serviceAccount }}
+{{- end }}
 {{- end }}
       containers:
         - name: {{ .Chart.Name }}
@@ -82,10 +86,12 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
 {{- end }}
           ports:
-{{ if .Values.pod.ports }}
+{{- if .Values.pod }}
+{{- if .Values.pod.ports }}
 {{- range $port := .Values.pod.ports }}
             - containerPort: {{ $port.port }}
               name: {{ $port.name }}
+{{- end }}
 {{- end }}
 {{- else }}
 {{- range $port := .Values.service.ports }}

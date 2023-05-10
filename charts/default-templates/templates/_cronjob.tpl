@@ -1,5 +1,5 @@
 {{- define "chart.cronjob" -}}
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: {{ if .Values.cronjob.name}}{{ .Values.cronjob.name }}{{ else }}{{ template "chart.fullname" . }}{{ end }}
