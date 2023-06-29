@@ -6,8 +6,12 @@ metadata:
   labels:
 {{ include "chart.labels" . | indent 4 }}
 spec: 
+{{- $mode := "Off" | quote -}}
+{{ if .Values.vpa.updateMode }}
+{{- $mode = .Values.vpa.updateMode | quote -}}
+{{ end}}
   updatePolicy:
-    updateMode: {{ .Values.vpa.updateMode | default "Off" }}
+    updateMode: {{ $mode }}
   targetRef: 
     apiVersion: apps/v1 
     kind: Deployment 
