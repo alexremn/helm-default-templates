@@ -14,7 +14,6 @@ spec:
     name: {{ template "chart.fullname" . }} 
   resourcePolicy:
     containerPolicies:
-      - containerName: '*'
 {{- with .Values.vpa.policies }}
 {{- toYaml . | nindent 6 }}
 {{- end }}
