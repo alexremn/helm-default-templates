@@ -1,5 +1,5 @@
 {{- define "chart.hpa" -}}
-apiVersion: {{ include "common.capabilities.hpa.apiVersion" . }}
+apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler 
 metadata:
   name: {{ template "chart.fullname" . }}
