@@ -5,12 +5,19 @@ metadata:
   name: {{ template "chart.fullname" . }}
   labels: {{ include "chart.labels" . | nindent 4 }}
 spec:
-{{- with .Values.deployment }}
-  revisionHistoryLimit: {{ .revisions | default "1" | quote }}
-  replicas: {{ .replicas | default "1" | quote }}
+  {{- if .Values.deployment }}
+  {{- with .Values.deployment }}
+  revisionHistoryLimit: {{ .revisions | default 1 | int}}
+  replicas: {{ .replicas | default 1 | int }}
   strategy:
-    type: {{ .strategy | default "RollingUpdate" | quote }}
-{{- end }}
+    type: {{ .strategy | default "RollingUpdate" | toString }}
+  {{- end }}
+  {{- else }}
+  revisionHistoryLimit: 1
+  replicas: 1
+  strategy:
+    type: "RollingUpdate"
+  {{- end }}
   selector:
     matchLabels: {{- include "chart.matchLabels" . | nindent 6 }}
   template:
