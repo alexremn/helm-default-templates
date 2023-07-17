@@ -3,12 +3,10 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ template "chart.fullname" . }}
-  labels:
-{{ include "chart.labels" . | indent 4 }}
-{{- with .Values.service.annotations }}
-  annotations:
-{{- toYaml . | nindent 4 }}
-{{- end }}
+  labels: {{- include "chart.labels" . | nindent 4 }}
+  {{- if .Values.service.annotations }}
+  annotations: {{- toYaml .Values.service.annotations | nindent 4 }}
+  {{- end }}
 spec:
   type: {{ .Values.service.type | default "ClusterIP" }}
 {{- if eq "ExternalName" ( .Values.service.type | default "ClusterIP" ) }}
@@ -21,8 +19,6 @@ spec:
       protocol: {{ $port.protocol | default "TCP" }}
       name: {{ $port.name }}
 {{- end }}
-  selector:
-    app: {{ template "chart.name" . }}
-    release: {{ .Release.Name | quote }}
+  selector: {{- include "chart.matchLabels" . | nindent 4 }}
 {{- end }}
 {{- end }}

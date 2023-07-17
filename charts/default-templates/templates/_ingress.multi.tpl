@@ -1,16 +1,19 @@
 {{- define "chart.ingress.multi" }}
-apiVersion: networking.k8s.io/v1
+apiVersion: {{ include "common.capabilities.ingress.apiVersion" . }}
 kind: Ingress
 metadata:
   name: {{ template "chart.fullname" . }}
-  labels:
-{{ include "chart.labels" . | indent 4 }}
-{{- with .Values.ingress.annotations }}
-  annotations:
-{{- toYaml . | nindent 4 }}
-{{- end }}
+  labels: {{- include "chart.labels" . | nindent 4 }}
+  {{- if .Values.ingress.annotations }}
+  annotations: {{- toYaml .Values.ingress.annotations | nindent 4 }}
+  {{- end }}
 spec:
-{{ if .Values.ingress.tls.enabled | default ("true") }}
+  {{- if .Values.ingress.className }}
+  ingressClassName: {{ .Values.ingress.className | quote }}
+  {{- else }}
+  ingressClassName: nginx
+  {{- end }}
+  {{- if .Values.ingress.tls.enabled | default ("true") }}
   tls:
     - hosts:
       {{- range $domain, $val := .Values.ingress.config }}
@@ -19,14 +22,14 @@ spec:
       {{- range $domain := .Values.ingress.extraDomains }}
       {{- printf "- %s" ($domain | toString | quote) | nindent 8 }}
       {{- end }}
-      {{ if .Values.ingress.tls.secretName }}
+      {{- if .Values.ingress.tls.secretName }}
       secretName: {{ .Values.ingress.tls.secretName }}
-      {{ else }}
-      secretName: {{ template "chart.fullname" . }}-tls
-      {{ end }}
-{{ end }}  
+      {{- else }}
+      secretName: {{ tpl .Values.ingress.domain . }}-tls
+      {{- end }}
+  {{- end }}  
   rules:
-{{- range $domain, $val := .Values.ingress.config }}
+  {{- range $domain, $val := .Values.ingress.config }}
     - host: {{ $domain }}
       http:
         paths:
@@ -57,5 +60,5 @@ spec:
                 number: {{ .port | default ((index $.Values.service.ports 0).port)}}
               {{- end }}
         {{- end }}
-{{- end }}
+  {{- end }}
 {{- end }}

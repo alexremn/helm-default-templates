@@ -3,13 +3,12 @@ apiVersion: autoscaling.k8s.io/v1
 kind: VerticalPodAutoscaler 
 metadata:
   name: {{ template "chart.fullname" . }}
-  labels:
-{{ include "chart.labels" . | indent 4 }}
+  labels: {{- include "chart.labels" . | nindent 4 }}
 spec: 
-{{- $mode := "Off" | quote -}}
-{{ if .Values.vpa.updateMode }}
-{{- $mode = .Values.vpa.updateMode | quote -}}
-{{ end}}
+{{- $mode := "Off" | quote }}
+{{- if .Values.vpa.updateMode }}
+{{- $mode = .Values.vpa.updateMode | quote }}
+{{- end }}
   updatePolicy:
     updateMode: {{ $mode }}
   targetRef: 
@@ -17,8 +16,5 @@ spec:
     kind: Deployment 
     name: {{ template "chart.fullname" . }} 
   resourcePolicy:
-    containerPolicies:
-{{- with .Values.vpa.policies }}
-{{- toYaml . | nindent 6 }}
-{{- end }}
+    containerPolicies: {{- toYaml .Values.vpa.policies | nindent 6 }}
 {{- end }}

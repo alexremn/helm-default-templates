@@ -4,11 +4,16 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ $configmap }}
-  labels:
-{{ include "chart.labels" $ | indent 4 }}
+  labels: {{- include "chart.labels" $ | nindent 4 }}
+  {{- if $.Values.configmaps.annotations }}
+  annotations: {{- toYaml $.Values.configmaps.annotations | nindent 4 }}
+  {{- end }}
 data:
-{{- with .values }}
-{{- toYaml . | nindent 2 }}
+{{- range $key, $value := .values }}
+{{- printf "%s: %s" $key ($value | toString | quote) | nindent 2 }}
+{{- end }}
+{{- with .tplvalues }}
+{{ tpl . $ | nindent 2 }}
 {{- end }}
 ---
 {{- end }}

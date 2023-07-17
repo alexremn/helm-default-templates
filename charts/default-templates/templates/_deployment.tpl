@@ -1,135 +1,111 @@
 {{- define "chart.deployment" -}}
-apiVersion: apps/v1
+apiVersion: {{ include "common.capabilities.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "chart.fullname" . }}
-  labels:
-{{ include "chart.labels" . | indent 4 }}
+  labels: {{ include "chart.labels" . | nindent 4 }}
 spec:
-{{- if .Values.deployment }}
-  revisionHistoryLimit: {{ .Values.deployment.revisions }}
-  replicas: {{ .Values.deployment.replicas }}
+{{- with .Values.deployment }}
+  revisionHistoryLimit: {{ .revisions | default "1" | quote }}
+  replicas: {{ .replicas | default "1" | quote }}
   strategy:
-    type: {{ .Values.deployment.strategy }}
+    type: {{ .strategy | default "RollingUpdate" | quote }}
 {{- end }}
   selector:
-    matchLabels:
-      app: {{ template "chart.name" . }}
-      release: {{ .Release.Name | quote }}
+    matchLabels: {{- include "chart.matchLabels" . | nindent 6 }}
   template:
     metadata:
-      labels:
-        app: {{ template "chart.name" . }}
-        release: {{ .Release.Name | quote }}
-{{- if .Values.pod }}
-{{- with .Values.pod.labels }}
-{{ toYaml . | nindent 8 }}
-{{- end }}
+      labels: {{- include "chart.labels" . | nindent 8 }}
+      {{- if .Values.pod }}
+      {{- if .Values.pod.labels }}
+      {{- toYaml .Values.pod.labels | indent 8 }}
+      {{- end }}
       annotations:
-{{- if .Values.pod.annotations }}
-{{- toYaml .Values.pod.annotations | nindent 8 }}
-{{- end }}
-{{- if .Values.pod.annotationstpl }}
-{{- with .Values.pod.annotationstpl }}
-{{- tpl . $ | nindent 8 }}
-{{- end }}
-{{- end }}
-{{- end }}
+      {{- if .Values.pod.annotations }}
+      {{- toYaml .Values.pod.annotations | indent 8 }}
+      {{- end }}
+      {{- if .Values.pod.annotationstpl }}
+      {{- tpl .Values.pod.annotationstpl . | indent 8 }}
+      {{- end }}
+      {{- end }}
     spec:
-{{- if .Values.global.imagePullSecret }}
+      {{- if .Values.global.imagePullSecret }}
       imagePullSecrets:
-        - name: {{ .Values.global.imagePullSecret }}
-{{- else if .Values.image.pullSecret }}
+        - name: {{ .Values.global.imagePullSecret | quote }}
+      {{- else if .Values.image.pullSecret }}
       imagePullSecrets:
-        - name: {{ .Values.image.pullSecret }}
-{{- end }}
-{{- with .Values.initContainers }}
-      initContainers:
-{{ tpl . $ | nindent 8 }}
-{{- end }}
-{{- if .Values.pod }}
-{{- if .Values.pod.serviceAccount }}
-      serviceAccountName: {{ tpl .Values.pod.serviceAccount . }}
-{{- end }}
-{{- end }}
+        - name: {{ .Values.image.pullSecret | quote }}
+      {{- end }}
+      {{- if .Values.initContainers }}
+      initContainers: {{- tpl .Values.initContainers $ | nindent 8 }}
+      {{- end }}
+      {{- if .Values.serviceAccount }}
+      serviceAccountName: {{ tpl .Values.serviceAccount . }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ tpl .Values.image.repository . }}/{{ tpl .Values.image.name . }}:{{ tpl .Values.image.tag . }}"
-{{- with .Values.command }}
-          command: 
-{{ toYaml . | nindent 12  }}
-{{- end }}
-{{- with .Values.args }}
-          args: 
-{{ toYaml . | nindent 12  }}
-{{- end }}
-{{- with .Values.securityContext }}
-          securityContext:
-{{ toYaml . | nindent 12 }}
-{{- end }}
-{{- if .Values.image.pullPolicy }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-{{- end }}
-{{ if .Values.service }}
+          {{- if .Values.command }}
+          command: {{- toYaml .Values.command | nindent 12  }}
+          {{- end }}
+          {{- if .Values.args }}
+          args: {{- toYaml .Values.args | nindent 12  }}
+          {{- end }}
+          {{- if .Values.securityContext }}
+          securityContext: {{- toYaml .Values.securityContext | nindent 12 }}
+          {{- end }}
+          imagePullPolicy: {{ .Values.image.pullPolicy | default "IfNotPresent" | quote }}
+          {{- if .Values.service }}
           ports:
-{{- range $port := .Values.service.ports }}
+          {{- range $port := .Values.service.ports }}
             - containerPort: {{ $port.targetPort | default $port.port }}
               name: {{ $port.name }}
-{{- end }}
-{{- end }}
-{{- with .Values.livenessProbe }}
-          livenessProbe:
-{{- toYaml . | nindent 12 }}
-{{- end }}
-{{- with .Values.readinessProbe }}
-          readinessProbe:
-{{- toYaml . | nindent 12 }}
-{{- end }}
-{{- with .Values.startupProbe }}
-          startupProbe:
-{{- toYaml . | nindent 12 }}
-{{- end }}
+          {{- end }}
+          {{- end }}
+          {{- if .Values.livenessProbe }}
+          livenessProbe: {{- toYaml .Values.livenessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.readinessProbe }}
+          readinessProbe: {{- toYaml .Values.readinessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.startupProbe }}
+          startupProbe: {{- toYaml .Values.startupProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.envVars }}
           env:
-{{- with .Values.extraEnv }}
-{{- toYaml . | nindent 12 }}
-{{- end }}
-{{- range $envVarGroup := .Values.envVarGroups }}
-    {{- range $key, $value := ( index $.Values.global.envVarGroups $envVarGroup ) }}
-        {{- printf "- name: %s\n  value: %s" $key ($value | toString | quote) | nindent 12 }}
-    {{- end }}
-{{- end }}
-{{- range $key, $value := .Values.envVars }}
-    {{- printf "- name: %s\n  value: %s" $key ($value | toString | quote) | nindent 12 }}
-{{- end }}
-{{- with .Values.envFrom }}
+          {{- range $key, $value := .Values.envVars }}
+              {{- printf "- name: %s\n  value: %s" $key ($value | toString | quote) | nindent 12 }}
+          {{- end }}
+          {{- end }}
           envFrom:
-{{- tpl . $ | nindent 12 }}
-{{- end }}
-{{- with .Values.volumeMounts }}
-          volumeMounts:
-{{ toYaml . | nindent 12 }}
-{{- end }}
-{{- with .Values.resources }}
-          resources:
-{{ toYaml . | nindent 12 }}
-{{- end }}
-{{- with .Values.extraContainers }}
-{{ tpl . $ | nindent 8 }}
-{{- end }}
-{{- with .Values.nodeSelector }}
-      nodeSelector:
-{{ toYaml . | nindent 8 }}
-{{- end }}
-{{- with .Values.affinity }}
-      affinity:
-{{ toYaml . | nindent 8 }}
-{{- end }}
-{{- with .Values.tolerations }}
-      tolerations:
-{{ toYaml . | nindent 8 }}
-{{- end }}
-      volumes:
-{{- with .Values.volumes }}
-{{- toYaml . | nindent 8 }}
-{{- end }}
+            {{- if .Values.envFromCM }}
+            {{- range .Values.envFromCM }}
+            - configMapRef:
+                name: {{ . | quote }}
+            {{- end }}
+            {{- end }}
+            {{- if .Values.envFromSecret }}
+            {{- range .Values.envFromSecret }}
+            - secretRef:
+                name: {{ . | quote }}
+            {{- end }}
+            {{- end }}
+          {{- if .Values.volumeMounts }}
+          volumeMounts: {{- toYaml .Values.volumeMounts | nindent 12 }}
+          {{- end }}
+          {{- if .Values.resources }}
+          resources: {{- toYaml .Values.resources | nindent 12 }}
+          {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector: {{- toYaml .Values.nodeSelector | nindent 8 }}
+      {{- end }}
+      {{- if .Values.affinity }}
+      affinity: {{- toYaml .Values.affinity | nindent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations: {{- toYaml .Values.tolerations | nindent 8 }}
+      {{- end }}
+      {{- if .Values.volumes }}
+      volumes: {{- toYaml .Values.volumes | nindent 8 }}
+      {{- end }}
 {{- end }}

@@ -1,31 +1,34 @@
 {{- define "chart.ingress" }}
-apiVersion: networking.k8s.io/v1
+apiVersion: {{ include "common.capabilities.ingress.apiVersion" . }}
 kind: Ingress
 metadata:
   name: {{ template "chart.fullname" . }}
-  labels:
-{{ include "chart.labels" . | indent 4 }}
-{{- with .Values.ingress.annotations }}
-  annotations:
-{{- toYaml . | nindent 4 }}
-{{- end }}
+  labels: {{- include "chart.labels" . | nindent 4 }}
+  {{- if .Values.ingress.annotations }}
+  annotations: {{- toYaml .Values.ingress.annotations | nindent 4 }}
+  {{- end }}
 spec:
-{{ if .Values.ingress.tls.enabled }}
+  {{- if .Values.ingress.className }}
+  ingressClassName: {{ .Values.ingress.className | quote }}
+  {{- else }}
+  ingressClassName: nginx
+  {{- end }}
+  {{- if .Values.ingress.tls.enabled | default ("true") }}
   tls:
     - hosts:
-      {{ if .Values.ingress.tls.hosts }}
+      {{- if .Values.ingress.tls.hosts }}
       {{- range $host := .Values.ingress.tls.hosts }}
         {{- printf "- %s" ($host | toString | quote) | nindent 8 }}
       {{- end }}
-      {{ else }}
+      {{- else }}
         - {{ tpl .Values.ingress.domain . }}
-      {{ end }}
-      {{ if .Values.ingress.tls.secretName }}
+      {{- end }}
+      {{- if .Values.ingress.tls.secretName }}
       secretName: {{ .Values.ingress.tls.secretName }}
-      {{ else }}
+      {{- else }}
       secretName: {{ tpl .Values.ingress.domain . }}-tls
-      {{ end }}
-{{ end }}      
+      {{- end }}
+  {{- end }}      
   rules:
     - host: {{ tpl .Values.ingress.domain . }}
       http:

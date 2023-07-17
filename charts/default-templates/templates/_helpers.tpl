@@ -38,6 +38,11 @@ release: {{ .Release.Name | quote }}
 heritage: {{ .Release.Service | quote }}
 {{- end -}}
 
+{{- define "chart.matchLabels" -}}
+app: {{ template "chart.name" . }}
+release: {{ .Release.Name | quote }}
+{{- end -}}
+
 {{- define "chart.function.to_env_variables" -}}
 {{ range $key, $value := . | fromYaml }}
 {{- printf "- name: %s\n  value: %s" $key ($value | toString | quote) }}
