@@ -1,20 +1,17 @@
 {{- define "chart.secret.multi" -}}
-{{- range $secret, $val := .Values.secrets }}
+{{- range $name, $val := .Values.secrets }}
 apiVersion: v1
 kind: Secret
 type: Opaque
 metadata:
-  name: {{ $secret }}
+  name: {{ $name }}
   labels: {{- include "chart.labels" $ | nindent 4 }}
   {{- if $.Values.secrets.annotations }}
   annotations: {{- toYaml $.Values.secrets.annotations | nindent 4 }}
   {{- end }}
 data:
-{{- range $key, $value := .values }}
+{{- range $key, $value := $val }}
 {{- printf "%s: %s" $key ($value | toString | b64enc | quote) | nindent 2 }}
-{{- end }}
-{{- with .tplvalues }}
-{{ tpl . $ | nindent 2 }}
 {{- end }}
 ---
 {{- end }}
