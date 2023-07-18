@@ -16,5 +16,11 @@ spec:
     kind: Deployment 
     name: {{ template "chart.fullname" . }} 
   resourcePolicy:
-    containerPolicies: {{- toYaml .Values.vpa.policies | nindent 6 }}
+    containerPolicies:
+    {{- with .Values.vpa }}
+      - containerName: {{ .containers | default "*" }}
+        minAllowed: {{- .minAllowed | toYaml | nindent 10 }}
+        maxAllowed: {{- .maxAllowed | toYaml | nindent 10 }}
+        controlledResources: ["cpu", "memory"]
+    {{- end }}
 {{- end }}

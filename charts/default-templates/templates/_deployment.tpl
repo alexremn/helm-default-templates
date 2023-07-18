@@ -23,18 +23,14 @@ spec:
   template:
     metadata:
       labels: {{- include "chart.labels" . | nindent 8 }}
-      {{- if .Values.pod }}
-      {{- if .Values.pod.labels }}
-      {{- toYaml .Values.pod.labels | indent 8 }}
-      {{- end }}
+        {{- if .Values.podLabels }}
+        {{- toYaml .Values.podLabels | nindent 8 }}
+        {{- end }}
       annotations:
-      {{- if .Values.pod.annotations }}
-      {{- toYaml .Values.pod.annotations | indent 8 }}
-      {{- end }}
-      {{- if .Values.pod.annotationstpl }}
-      {{- tpl .Values.pod.annotationstpl . | indent 8 }}
-      {{- end }}
-      {{- end }}
+        lastUpdate: {{ now }}
+        {{- if .Values.podAnnotations }}
+        {{- toYaml .Values.podAnnotations | nindent 8 }}
+        {{- end }}
     spec:
       {{- if .Values.global.imagePullSecret }}
       imagePullSecrets:
