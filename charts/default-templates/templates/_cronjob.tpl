@@ -55,15 +55,15 @@ spec:
             volumeMounts:
 {{- toYaml . | nindent 14 }}
 {{- end }}
-{{- with .Values.resources }}
+{{- with .Values.cronjob.resources }}
             resources:
 {{ toYaml . | nindent 14 }}
 {{- end }}
-{{- with .Values.livenessProbe }}
+{{- with .Values.cronjob.livenessProbe }}
             livenessProbe:
 {{- toYaml . | nindent 14 }}
 {{- end }}
-{{- with .Values.readinessProbe }}
+{{- with .Values.cronjob.readinessProbe }}
             readinessProbe:
 {{- toYaml . | nindent 14 }}
 {{- end }}
