@@ -45,6 +45,9 @@ spec:
       {{- if .Values.serviceAccount }}
       serviceAccountName: {{ tpl .Values.serviceAccount . }}
       {{- end }}
+      {{- if .Values.podSecurityContext }}
+      securityContext: {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ tpl .Values.image.repository . }}/{{ tpl .Values.image.name . }}:{{ tpl .Values.image.tag . }}"
@@ -54,8 +57,8 @@ spec:
           {{- if .Values.args }}
           args: {{- toYaml .Values.args | nindent 12  }}
           {{- end }}
-          {{- if .Values.securityContext }}
-          securityContext: {{- toYaml .Values.securityContext | nindent 12 }}
+          {{- if .Values.containerSecurityContext }}
+          securityContext: {{- toYaml .Values.containerSecurityContext | nindent 12 }}
           {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy | default "IfNotPresent" | quote }}
           {{- if .Values.service }}
