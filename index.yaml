@@ -30,6 +30,24 @@ entries:
     version: 2.6.0
   default-templates:
   - apiVersion: v2
+    appVersion: 1.1.9
+    created: "2023-12-05T11:09:24.22377802Z"
+    description: Default templates chart
+    digest: f6628579a42f787df3bdd52b75ed7f7ee2d414aeb90115a33486ffded5866195
+    icon: https://hub.docker.com/public/images/logos/mini-logo.svg
+    keywords:
+    - default
+    - templates
+    maintainers:
+    - email: alex@doneright.dev
+      name: Alexander Remniov
+    name: default-templates
+    sources:
+    - https://gitlab.imlab.by/infrastructure/helm
+    urls:
+    - https://github.com/alexremn/helm-default-templates/releases/download/default-templates-1.1.9/default-templates-1.1.9.tgz
+    version: 1.1.9
+  - apiVersion: v2
     appVersion: 1.1.8
     created: "2023-12-03T22:23:21.065109857Z"
     description: Default templates chart
@@ -390,4 +408,4 @@ entries:
     urls:
     - https://github.com/alexremn/helm-default-templates/releases/download/default-templates-1.0.1/default-templates-1.0.1.tgz
     version: 1.0.1
-generated: "2023-12-03T22:23:21.065292335Z"
+generated: "2023-12-05T11:09:24.223950603Z"
