@@ -5,7 +5,7 @@ kind: ExternalSecret
 metadata:
   name: {{ $secret }}
   labels: {{ include "chart.labels" $ | nindent 4 }}
-   annotations:
+  annotations:
     force-sync: {{ now | quote }}
 spec:
   refreshInterval: '0'
