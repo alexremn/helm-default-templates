@@ -4,7 +4,7 @@ apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:
   name: {{ $secret }}
-  labels: {{ include "chart.labels" . | nindent 4 }}
+  labels: {{ include "chart.labels" $ | nindent 4 }}
    annotations:
     force-sync: {{ now | quote }}
 spec:
