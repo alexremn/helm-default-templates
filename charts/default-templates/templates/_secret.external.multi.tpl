@@ -16,11 +16,11 @@ spec:
     creationPolicy: Owner
     name: {{ $secret }}
   data:
-{{- range $val }}
-  - secretKey: {{ .secretKey }}
+{{- range $key, $value := $val }}
+  - secretKey: {{ $key }}
     remoteRef:
-      key: {{ .remoteRef.key }}
-      property: {{ .remoteRef.property }}
+      key: {{ $value }}
+      property: {{ $key }}
 {{- end }}
 ---
 {{- end }}
