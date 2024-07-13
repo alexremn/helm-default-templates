@@ -16,6 +16,7 @@ spec:
   schedule: {{ .Values.cronjob.schedule }}
   jobTemplate:
     spec:
+      backoffLimit: {{ .Values.cronjob.backoffLimit | default 0 }}
       template:
         spec:
 {{- if .Values.global.imagePullSecret }}
