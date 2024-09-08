@@ -30,6 +30,30 @@ entries:
     version: 2.6.0
   default-templates:
   - apiVersion: v2
+    appVersion: 1.1.18
+    created: "2024-09-08T17:26:53.328997965Z"
+    dependencies:
+    - name: common
+      repository: oci://registry-1.docker.io/bitnamicharts
+      tags:
+      - bitnami-common
+      version: 2.x.x
+    description: Default templates chart
+    digest: 5c3475930adcaf2125adb522ce5b32656f78b463e73a7cb693d9c4f6b9d272b7
+    icon: https://hub.docker.com/public/images/logos/mini-logo.svg
+    keywords:
+    - default
+    - templates
+    maintainers:
+    - email: alex@doneright.dev
+      name: Alexander Remniov
+    name: default-templates
+    sources:
+    - https://gitlab.imlab.by/infrastructure/helm
+    urls:
+    - https://github.com/alexremn/helm-default-templates/releases/download/default-templates-1.1.18/default-templates-1.1.18.tgz
+    version: 1.1.18
+  - apiVersion: v2
     appVersion: 1.1.17
     created: "2024-07-13T14:49:31.07219004Z"
     dependencies:
@@ -600,4 +624,4 @@ entries:
     urls:
     - https://github.com/alexremn/helm-default-templates/releases/download/default-templates-1.0.1/default-templates-1.0.1.tgz
     version: 1.0.1
-generated: "2024-07-13T14:49:31.072680914Z"
+generated: "2024-09-08T17:26:53.329368101Z"
