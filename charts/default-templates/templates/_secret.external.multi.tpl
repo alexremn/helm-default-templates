@@ -1,10 +1,9 @@
 {{- define "chart.secret.external.multi" -}}
-{{- $secretStore := .Values.extSecrets.secretStore }}
-{{- range $secret, $val := .Values.extSecrets.values }}
+{{- range $secretName, $secretConfig := .Values.extSecrets }}
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:
-  name: {{ $secret }}
+  name: {{ $secretName }}
   labels: {{ include "chart.labels" $ | nindent 4 }}
   annotations:
     force-sync: {{ now | quote }}
@@ -12,16 +11,17 @@ spec:
   refreshInterval: '0'
   secretStoreRef:
     kind: ClusterSecretStore
-    name: {{ $secretStore }}
+    name: {{ $secretConfig.secretStore }}
   target:
     creationPolicy: Owner
-    name: {{ $secret }}
+    name: {{ $secretName }}
   data:
-{{- range $key, $secrets := $val }}
-{{- range $secrets }}
+{{- range $secretConfig.secrets }}
+{{- $remoteKey := .name }}
+{{- range .keys }}
   - secretKey: {{ . }}
     remoteRef:
-      key: {{ $key }}
+      key: {{ $remoteKey }}
       property: {{ . }}
 {{- end }}
 {{- end }}
