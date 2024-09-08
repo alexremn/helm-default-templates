@@ -1,4 +1,5 @@
 {{- define "chart.secret.external.multi" -}}
+{{- $secretStore := .Values.extSecrets.secretStore }}
 {{- range $secret, $val := .Values.extSecrets.values }}
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
@@ -11,7 +12,7 @@ spec:
   refreshInterval: '0'
   secretStoreRef:
     kind: ClusterSecretStore
-    name: {{ .Values.extSecrets.secretStore }}
+    name: {{ $secretStore }}
   target:
     creationPolicy: Owner
     name: {{ $secret }}
