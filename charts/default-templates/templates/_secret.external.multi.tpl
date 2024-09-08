@@ -19,10 +19,10 @@ spec:
 {{- range $secretConfig.secrets }}
 {{- $remoteKey := .name }}
 {{- range .keys }}
-  - secretKey: {{- if typeIs "string" . }}{{ . }}{{- else }}{{ .name }}{{- end }}
+  - secretKey: {{- if hasKey . "name" }}{{ .name }}{{ else }}{{ . }}{{ end }}
     remoteRef:
       key: {{ $remoteKey }}
-      property: {{- if typeIs "string" . }}{{ . }}{{- else }}{{ .property }}{{- end }}
+      property: {{- if hasKey . "property" }}{{ .property }}{{ else }}{{ . }}{{ end }}
 {{- end }}
 {{- end }}
 ---
