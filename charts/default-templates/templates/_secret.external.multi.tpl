@@ -15,6 +15,12 @@ spec:
   target:
     creationPolicy: Owner
     name: {{ $secretName }}
+{{- if $secretConfig.manual }}
+    template:
+      mergePolicy: Merge
+      engineVersion: v2
+      data: {{ toYaml $secretConfig.manual | nindent 8 }}
+{{- end }}
   data:
 {{- range $secretConfig.secrets }}
 {{- $remoteKey := .name }}
