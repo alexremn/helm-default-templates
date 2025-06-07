@@ -1,6 +1,6 @@
 {{- define "chart.secret.external.multi" -}}
 {{- range $secretName, $secretConfig := .Values.extSecrets }}
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: {{ $secretName }}

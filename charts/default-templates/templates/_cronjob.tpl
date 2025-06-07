@@ -11,8 +11,8 @@ metadata:
 {{- end }}
 spec:
   concurrencyPolicy: {{ .Values.cronjob.concurrencyPolicy | toString }}
-  failedJobsHistoryLimit: {{ .Values.cronjob.failedHistory }}
-  successfulJobsHistoryLimit: {{ .Values.cronjob.successHistory }}
+  failedJobsHistoryLimit: {{ .Values.cronjob.failedHistory | default 0 }}
+  successfulJobsHistoryLimit: {{ .Values.cronjob.successHistory | default 0 }}
   schedule: {{ .Values.cronjob.schedule }}
   jobTemplate:
     spec:
