@@ -8,7 +8,7 @@ metadata:
   annotations:
     force-sync: {{ now | quote }}
 spec:
-  refreshInterval: '0'
+  refreshInterval: '10000h'
   secretStoreRef:
     kind: ClusterSecretStore
     name: {{ $secretConfig.secretStore }}
