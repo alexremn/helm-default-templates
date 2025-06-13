@@ -7,14 +7,13 @@ metadata:
 spec:
   {{- if .Values.deployment }}
   {{- with .Values.deployment }}
-  revisionHistoryLimit: {{ .revisions | default 1 | int}}
-  replicas: {{ .replicas | default 1 | int }}
+  revisionHistoryLimit: {{ default 1 .revisions }}
   strategy:
     type: {{ .strategy | default "RollingUpdate" | toString }}
   {{- end }}
   {{- else }}
   revisionHistoryLimit: 1
-  replicas: 1
+  replicas: {{ default 1 .Values.replicas }}
   strategy:
     type: "RollingUpdate"
   {{- end }}

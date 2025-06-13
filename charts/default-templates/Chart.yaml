@@ -1,8 +1,9 @@
 apiVersion: v2
-appVersion: '1.1.26'
-version: '1.1.26'
+appVersion: '1.1.27'
+version: '1.1.27'
 name: default-templates
 description: Default templates chart
+type: library
 icon: https://hub.docker.com/public/images/logos/mini-logo.svg
 sources:
 - https://gitlab.imlab.by/infrastructure/helm
